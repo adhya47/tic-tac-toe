@@ -53,14 +53,14 @@ const enableBoxes = () => {
 
 // Show winner message
 const showWinner = (winner) => {
-    msg.innerText = `🎉 Congratulations! Winner is ${winner}`;
+    msg.innerText = `Congratulations! Winner is ${winner}`;
     msgContainer.classList.remove("hidd");
     disableBoxes();
 };
 
 // Show tie message
 const showTie = () => {
-    msg.innerText = "😅 It's a Tie!";
+    msg.innerText = "It's a Tie!";
     msgContainer.classList.remove("hidd");
     disableBoxes();
 };
