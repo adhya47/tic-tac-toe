@@ -3,7 +3,7 @@ let resetbtn = document.querySelector("#reset-btn");
 let newGameBtn = document.querySelector("#new-btn");
 let msgContainer = document.querySelector(".msg");
 let msg = document.querySelector("#msg");
-let turnO = true; //playerX,playerO
+let turnO = true; // true = Player O's turn, false = Player X's turn
 
 const winPatterns = [
     [0, 1, 2],
@@ -15,56 +15,82 @@ const winPatterns = [
     [3, 4, 5],
     [6, 7, 8]
 ];
+
+// Reset game
 const resetGame = () => {
     turnO = true;
     enableBoxes();
-    msgContainer.classList.add('hidd');
-}
+    msgContainer.classList.add("hidd");
+};
+
+// Handle player clicks
 boxes.forEach((b) => {
     b.addEventListener("click", () => {
         if (turnO) {
-            //playerO
             b.innerText = "O";
             turnO = false;
         } else {
-
-            //playerX
             b.innerText = "X";
             turnO = true;
         }
         b.disabled = true;
         checkWinner();
-    })
+    });
 });
 
+// Disable all boxes when game ends
 const disableBoxes = () => {
-    for (let box of boxes) {
-        box.disabled = true;
-    }
-}
+    boxes.forEach((box) => box.disabled = true);
+};
+
+// Enable all boxes for a new game
 const enableBoxes = () => {
-    for (let box of boxes) {
+    boxes.forEach((box) => {
         box.disabled = false;
         box.innerText = "";
-    }
-}
+    });
+};
+
+// Show winner message
 const showWinner = (winner) => {
-    msg.innerText = `Congratulations!! Winner is ${winner}`;
+    msg.innerText = `🎉 Congratulations! Winner is ${winner}`;
     msgContainer.classList.remove("hidd");
     disableBoxes();
-}
+};
+
+// Show tie message
+const showTie = () => {
+    msg.innerText = "😅 It's a Tie!";
+    msgContainer.classList.remove("hidd");
+    disableBoxes();
+};
+
+// Check for winner or tie
 const checkWinner = () => {
+    let winnerFound = false;
+
     for (let pattern of winPatterns) {
-        let pos1val = boxes[pattern[0]].innerText;
-        let pos2val = boxes[pattern[1]].innerText;
-        let pos3val = boxes[pattern[2]].innerText;
-        if (pos1val != "" && pos2val != "" && pos3val != "") {
-            if (pos1val === pos2val && pos2val === pos3val) {
-                console.log('winner', pos1val);
-                showWinner(pos1val);
+        let [a, b, c] = pattern;
+        let pos1 = boxes[a].innerText;
+        let pos2 = boxes[b].innerText;
+        let pos3 = boxes[c].innerText;
+
+        if (pos1 !== "" && pos2 !== "" && pos3 !== "") {
+            if (pos1 === pos2 && pos2 === pos3) {
+                showWinner(pos1);
+                winnerFound = true;
+                return; // stop once we find a winner
             }
         }
     }
-}
+
+    // Check tie if no winner found
+    if (!winnerFound) {
+        let allFilled = [...boxes].every(box => box.innerText !== "");
+        if (allFilled) showTie();
+    }
+};
+
+// Reset & New Game buttons
 newGameBtn.addEventListener("click", resetGame);
 resetbtn.addEventListener("click", resetGame);
